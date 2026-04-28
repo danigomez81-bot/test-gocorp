@@ -26,7 +26,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body {
-    background: var(--bg);
+    background: transparent;
     color: var(--ink);
     font-family: Arial, Helvetica, sans-serif;
     font-size: 16px;
@@ -45,8 +45,8 @@
   .stage {
     width: 100%;
     max-width: 660px;
-    padding: 56px 28px 80px;
-    min-height: 100vh;
+    padding: 24px 28px 60px;
+    min-height: auto;
     display: flex;
     flex-direction: column;
   }
@@ -55,8 +55,7 @@
   .welcome {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    flex: 1;
+    padding: 16px 0;
     animation: fadeUp 0.7s ease-out;
   }
 
@@ -618,7 +617,7 @@
 
   /* ============ Mobile ============ */
   @media (max-width: 480px) {
-    .stage { padding: 36px 20px 60px; }
+    .stage { padding: 20px 20px 50px; }
     .welcome h1 { font-size: 1.9rem; }
     .question-text { font-size: 1.25rem; }
     .archetype-name { font-size: 24px; }
