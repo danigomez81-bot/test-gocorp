@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>¿Qué tipo de dueño saturado sos?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #E8EEF4;
@@ -17,6 +20,7 @@
     --warm: #E8A317;
     --rule: #C8D3DE;
     --rule-soft: #DDE5EE;
+    --display: 'Fraunces', Georgia, serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -60,18 +64,20 @@
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.22em;
-    color: var(--warm);
+    color: var(--accent);
     font-weight: 700;
     margin-bottom: 28px;
   }
 
   .welcome h1 {
-    font-weight: 700;
-    font-size: clamp(2rem, 5.5vw, 3.2rem);
-    line-height: 1.08;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(2.1rem, 5.8vw, 3.4rem);
+    line-height: 1.05;
     letter-spacing: -0.02em;
     margin-bottom: 32px;
     color: var(--ink);
+    font-variation-settings: "opsz" 144;
   }
 
   .welcome h1 em {
@@ -155,12 +161,14 @@
   }
 
   .question-text {
-    font-weight: 700;
-    font-size: clamp(1.35rem, 3.6vw, 1.7rem);
-    line-height: 1.3;
-    letter-spacing: -0.01em;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(1.4rem, 3.8vw, 1.8rem);
+    line-height: 1.22;
+    letter-spacing: -0.015em;
     margin-bottom: 36px;
     color: var(--ink);
+    font-variation-settings: "opsz" 100;
   }
 
   .options {
@@ -355,12 +363,14 @@
   }
 
   .result-header h2 {
-    font-weight: 700;
-    font-size: clamp(1.85rem, 5vw, 2.5rem);
-    line-height: 1.12;
-    letter-spacing: -0.018em;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(1.95rem, 5.2vw, 2.6rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
     margin-bottom: 18px;
     color: var(--ink);
+    font-variation-settings: "opsz" 144;
   }
 
   .result-header h2 em {
@@ -425,12 +435,14 @@
   }
 
   .archetype-name {
-    font-weight: 700;
-    font-size: 30px;
-    line-height: 1.1;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 1.05;
     margin-bottom: 6px;
     letter-spacing: -0.02em;
     color: var(--ink);
+    font-variation-settings: "opsz" 144;
   }
 
   .archetype-meta {
@@ -514,11 +526,12 @@
   }
 
   .mail-section h3 {
-    font-weight: 700;
-    font-size: 22px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 23px;
     line-height: 1.2;
     margin-bottom: 12px;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
     color: var(--ink);
   }
 
@@ -567,10 +580,12 @@
   }
 
   .mail-confirm h3 {
-    font-weight: 700;
+    font-family: var(--display);
+    font-weight: 600;
     color: var(--ink);
-    font-size: 22px;
+    font-size: 23px;
     margin-bottom: 8px;
+    letter-spacing: -0.015em;
   }
 
   .footer-note {
@@ -642,7 +657,7 @@
 const questions = [
   {
     id: 'q1', type: 'single',
-    text: 'Si te tomaras 7 días sin avisar a nadie, ¿qué pasaría con tu negocio?',
+    text: 'Si te tomaras 7 días sin avisar a nadie, ¿qué pasaría con tu negocio/empresa?',
     options: [
       { id: 'a', text: 'Para entera o casi entera.' },
       { id: 'b', text: 'Funciona, pero se acumulan decisiones que nadie más puede tomar.' },
@@ -728,7 +743,7 @@ const questions = [
     id: 'q10', type: 'single',
     text: 'Si pudieras vender tu negocio mañana a un precio razonable, ¿lo harías?',
     options: [
-      { id: 'a', text: 'Ni en pedo, lo quiero hacer crecer.' },
+      { id: 'a', text: 'De ninguna manera, lo quiero hacer crecer.' },
       { id: 'b', text: 'Tal vez, dependería del precio.' },
       { id: 'c', text: 'Probablemente sí.' },
       { id: 'd', text: 'Sí, sin dudarlo.' }
@@ -737,17 +752,17 @@ const questions = [
 ];
 
 const scoringMap = {
-  q1: { a: { Bombero: 3, Memoria: 1 }, b: { Firmante: 2 }, c: { Memoria: 2 }, d: {} },
-  q2: { a: {}, b: { Memoria: 1, Firmante: 1 }, c: { Memoria: 2 }, d: { Memoria: 3 } },
+  q1: { a: { Bombero: 1 }, b: { Firmante: 2 }, c: { Memoria: 2 }, d: {} },
+  q2: { a: {}, b: { Memoria: 1, Firmante: 1 }, c: { Memoria: 2 }, d: { Memoria: 3, Bombero: 1 } },
   q3: { a: { Bombero: 3 }, b: { Bombero: 2 }, c: { Bombero: 1 }, d: {} },
   q4: { a: { Firmante: 3 }, b: { Firmante: 2 }, c: { Firmante: 1 }, d: {} },
-  q6: { a: { Desconfiado: 1 }, b: { Desconfiado: 3 }, c: { Desconfiado: 2 }, d: { Memoria: 1 } },
-  q8: { a: {}, b: { Cansado: 1 }, c: { Cansado: 2 }, d: { Cansado: 3 } },
-  q9: { a: { Memoria: 3 }, b: { Memoria: 2 }, c: {}, d: {} },
+  q6: { a: { Desconfiado: 1 }, b: { Desconfiado: 3 }, c: { Desconfiado: 2 }, d: { Memoria: 1, Bombero: 2 } },
+  q8: { a: {}, b: { Cansado: 1, Bombero: 1 }, c: { Cansado: 2 }, d: { Cansado: 3 } },
+  q9: { a: { Memoria: 3, Desconfiado: 1, Bombero: 1 }, b: { Memoria: 2 }, c: {}, d: {} },
   q10: { a: {}, b: {}, c: { Cansado: 2 }, d: { Cansado: 3 } }
 };
 
-const maxScores = { Bombero: 6, Memoria: 9, Firmante: 9, Desconfiado: 9, Cansado: 6 };
+const maxScores = { Bombero: 9, Memoria: 9, Firmante: 9, Desconfiado: 10, Cansado: 6 };
 
 const archetypes = {
   Bombero: {
@@ -941,6 +956,7 @@ function showResult() {
   const dominantPct = pct[dominant];
   const secondaryPct = pct[secondary];
   const isHealthy = dominantPct < 30;
+  const isTie = !isHealthy && dominantPct === secondaryPct;
 
   let html = '';
 
@@ -958,6 +974,37 @@ function showResult() {
         <p class="archetype-desc">${archetypes[dominant].description}</p>
         <div class="bar-track"><div class="bar-fill" style="width:0%" data-target="${dominantPct}"></div></div>
         <div class="bar-label"><span>Intensidad</span><span>${dominantPct}%</span></div>
+      </div>
+    `;
+  } else if (isTie) {
+    html = `
+      <div class="result-header">
+        <div class="kicker">Tu perfil</div>
+        <h2>Sos, en partes iguales, ${archetypes[dominant].article} <em>${archetypes[dominant].name}</em> y ${archetypes[secondary].article} <em>${archetypes[secondary].name}</em>.</h2>
+        <p>No hay un arquetipo que pese más que el otro. Eso es información, no ambigüedad: te muestro cómo se cruzan los dos abajo.</p>
+      </div>
+
+      <div class="archetype-card dominant">
+        <div class="archetype-rank">Co-dominante</div>
+        <h3 class="archetype-name">${archetypes[dominant].fullName}</h3>
+        <p class="archetype-meta">${archetypes[dominant].tagline}</p>
+        <p class="archetype-desc">${archetypes[dominant].description}</p>
+        <div class="bar-track"><div class="bar-fill" style="width:0%" data-target="${dominantPct}"></div></div>
+        <div class="bar-label"><span>Intensidad</span><span>${dominantPct}%</span></div>
+      </div>
+
+      <div class="archetype-card dominant">
+        <div class="archetype-rank">Co-dominante</div>
+        <h3 class="archetype-name">${archetypes[secondary].fullName}</h3>
+        <p class="archetype-meta">${archetypes[secondary].tagline}</p>
+        <p class="archetype-desc">${archetypes[secondary].description}</p>
+        <div class="bar-track"><div class="bar-fill" style="width:0%" data-target="${secondaryPct}"></div></div>
+        <div class="bar-label"><span>Intensidad</span><span>${secondaryPct}%</span></div>
+      </div>
+
+      <div class="insight-box">
+        <div class="insight-kicker">Lo que esto significa</div>
+        <p>${getInsight(dominant, secondary)}</p>
       </div>
     `;
   } else {
@@ -1006,7 +1053,7 @@ function showResult() {
     </div>
 
     <div class="footer-note">
-      Si querés conversar sobre tu caso puntualmente, <a href="mailto:daniel@gocorp.com.ar">escribime</a>.
+      Si querés conversar sobre tu caso puntualmente, <a href="mailto:daniel.gomez@gocorp.com.ar">escribime</a>.
       <br>Diagnóstico GoCorp · Daniel Gómez
     </div>
   `;
