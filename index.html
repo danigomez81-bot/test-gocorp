@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Qué tipo de dueño saturado sos?</title>
+<style>
+  :root {
+    --bg: #E8EEF4;
+    --surface: #FFFFFF;
+    --surface-warm: #FFF5E6;
+    --ink: #2D4059;
+    --ink-soft: #5A6878;
+    --ink-faint: #8A95A3;
+    --accent: #5A9BC4;
+    --accent-deep: #3F7FA8;
+    --warm: #E8A317;
+    --rule: #C8D3DE;
+    --rule-soft: #DDE5EE;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stage {
+    width: 100%;
+    max-width: 660px;
+    padding: 56px 28px 80px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ============ Welcome ============ */
+  .welcome {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    animation: fadeUp 0.7s ease-out;
+  }
+
+  .kicker {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--warm);
+    font-weight: 700;
+    margin-bottom: 28px;
+  }
+
+  .welcome h1 {
+    font-weight: 700;
+    font-size: clamp(2rem, 5.5vw, 3.2rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+    color: var(--ink);
+  }
+
+  .welcome h1 em {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .welcome .lede {
+    font-size: 17px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    max-width: 540px;
+    margin-bottom: 16px;
+  }
+
+  .welcome .lede strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .welcome .meta {
+    font-size: 13px;
+    color: var(--ink-faint);
+    margin: 32px 0 36px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+  }
+
+  .welcome .meta::before,
+  .welcome .meta::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+    max-width: 80px;
+  }
+
+  /* ============ Question screen ============ */
+  .question-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    animation: fadeUp 0.5s ease-out;
+  }
+
+  .progress-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+
+  .progress-num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    font-feature-settings: "tnum";
+    letter-spacing: 0.06em;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 2px;
+    background: var(--rule);
+    position: relative;
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    position: absolute;
+    left: 0; top: 0;
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.5s cubic-bezier(.2,.7,.3,1);
+  }
+
+  .question-text {
+    font-weight: 700;
+    font-size: clamp(1.35rem, 3.6vw, 1.7rem);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    margin-bottom: 36px;
+    color: var(--ink);
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    width: 100%;
+    text-align: left;
+    background: var(--surface);
+    border: 1.5px solid var(--rule);
+    color: var(--ink);
+    padding: 18px 22px;
+    font-family: inherit;
+    font-size: 15.5px;
+    line-height: 1.45;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    border-radius: 4px;
+  }
+
+  .option:hover {
+    border-color: var(--accent);
+    background: #FAFCFE;
+    transform: translateX(2px);
+  }
+
+  .option.selected {
+    background: var(--ink);
+    color: var(--surface);
+    border-color: var(--ink);
+  }
+
+  .option .marker {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+
+  .option.selected .marker {
+    color: var(--warm);
+  }
+
+  /* ============ Scale (1-5) ============ */
+  .scale-question {
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed var(--rule);
+  }
+
+  .scale-question:last-of-type {
+    border-bottom: none;
+    margin-bottom: 24px;
+  }
+
+  .scale-statement {
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 16px;
+    font-style: italic;
+    line-height: 1.45;
+  }
+
+  .scale {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .scale-btn {
+    flex: 1;
+    background: var(--surface);
+    border: 1.5px solid var(--rule);
+    color: var(--ink-soft);
+    padding: 14px 0;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-radius: 4px;
+  }
+
+  .scale-btn:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+  }
+
+  .scale-btn.selected {
+    background: var(--ink);
+    color: var(--surface);
+    border-color: var(--ink);
+  }
+
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  /* ============ Buttons ============ */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--ink);
+    color: var(--surface);
+    border: none;
+    padding: 16px 28px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--accent);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .btn-primary .arrow {
+    font-size: 18px;
+    transition: transform 0.2s;
+    line-height: 1;
+  }
+
+  .btn-primary:hover:not(:disabled) .arrow {
+    transform: translateX(3px);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1.5px solid var(--rule);
+    padding: 14px 22px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-secondary:hover {
+    color: var(--ink);
+    border-color: var(--accent);
+    background: var(--surface);
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 32px;
+  }
+
+  /* ============ Result screen ============ */
+  .result {
+    animation: fadeUp 0.7s ease-out;
+  }
+
+  .result-header {
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .result-header h2 {
+    font-weight: 700;
+    font-size: clamp(1.85rem, 5vw, 2.5rem);
+    line-height: 1.12;
+    letter-spacing: -0.018em;
+    margin-bottom: 18px;
+    color: var(--ink);
+  }
+
+  .result-header h2 em {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .result-header p {
+    color: var(--ink-soft);
+    font-size: 16px;
+    max-width: 540px;
+    line-height: 1.55;
+  }
+
+  .archetype-card {
+    background: var(--surface);
+    border: 1.5px solid var(--rule);
+    padding: 32px 28px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+
+  .archetype-card.dominant {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--surface);
+  }
+
+  .archetype-card.dominant .archetype-name,
+  .archetype-card.dominant .archetype-meta {
+    color: var(--surface);
+  }
+
+  .archetype-card.dominant .archetype-rank {
+    color: var(--warm);
+  }
+
+  .archetype-card.dominant .archetype-desc {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .archetype-card.dominant .bar-track {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .archetype-card.dominant .bar-fill {
+    background: var(--warm);
+  }
+
+  .archetype-card.dominant .bar-label {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .archetype-rank {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+
+  .archetype-name {
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1.1;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .archetype-meta {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-bottom: 22px;
+    font-style: italic;
+  }
+
+  .archetype-desc {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 26px;
+  }
+
+  .bar-track {
+    height: 4px;
+    background: var(--rule-soft);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 1.2s cubic-bezier(.2,.7,.3,1);
+  }
+
+  .bar-label {
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    font-feature-settings: "tnum";
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+
+  .insight-box {
+    margin-top: 36px;
+    padding: 28px 26px;
+    background: var(--surface-warm);
+    border-left: 3px solid var(--warm);
+    border-radius: 0 4px 4px 0;
+  }
+
+  .insight-kicker {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--warm);
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  .insight-box p {
+    font-size: 17px;
+    line-height: 1.5;
+    font-weight: 400;
+    color: var(--ink);
+  }
+
+  .insight-box p em {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--accent-deep);
+  }
+
+  /* ============ Mail ============ */
+  .mail-section {
+    margin-top: 44px;
+    padding: 32px 28px;
+    background: var(--surface);
+    border: 1.5px solid var(--rule);
+    border-radius: 4px;
+  }
+
+  .mail-section h3 {
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  .mail-section p {
+    color: var(--ink-soft);
+    font-size: 15px;
+    margin-bottom: 22px;
+    line-height: 1.55;
+  }
+
+  .mail-form {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .mail-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 14px 16px;
+    border: 1.5px solid var(--rule);
+    background: var(--surface);
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--ink);
+    border-radius: 4px;
+    transition: border-color 0.15s;
+  }
+
+  .mail-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .mail-confirm {
+    padding: 32px 0;
+    text-align: center;
+    color: var(--ink-soft);
+  }
+
+  .mail-confirm .check {
+    font-size: 32px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+
+  .mail-confirm h3 {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  .footer-note {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--ink-faint);
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .footer-note a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  .footer-note a:hover {
+    color: var(--accent-deep);
+  }
+
+  /* ============ Animations ============ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hidden { display: none !important; }
+
+  /* ============ Mobile ============ */
+  @media (max-width: 480px) {
+    .stage { padding: 36px 20px 60px; }
+    .welcome h1 { font-size: 1.9rem; }
+    .question-text { font-size: 1.25rem; }
+    .archetype-name { font-size: 24px; }
+    .archetype-card { padding: 24px 22px; }
+    .scale-btn { padding: 12px 0; font-size: 15px; }
+    .nav-row { flex-direction: column-reverse; align-items: stretch; }
+    .nav-row .btn-primary,
+    .nav-row .btn-secondary { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+
+  <div class="welcome" id="welcome">
+    <div class="kicker">Diagnóstico — GoCorp</div>
+    <h1>¿Qué tipo de <em>dueño saturado</em> sos?</h1>
+    <p class="lede"><strong>10 preguntas. 5 minutos.</strong> Te devuelve un perfil concreto de cómo te estás autolimitando, y por dónde salir.</p>
+    <p class="lede">Sin recetas, sin frases motivacionales. Un espejo honesto del lugar donde estás parado.</p>
+    <div class="meta">Pensado para dueños de Pymes de 5 a 25 personas</div>
+    <div>
+      <button class="btn-primary" onclick="startTest()">
+        Empezar <span class="arrow">→</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="question-screen hidden" id="questionScreen"></div>
+
+  <div class="result hidden" id="resultScreen"></div>
+
+</div>
+
+<script>
+const questions = [
+  {
+    id: 'q1', type: 'single',
+    text: 'Si te tomaras 7 días sin avisar a nadie, ¿qué pasaría con tu negocio?',
+    options: [
+      { id: 'a', text: 'Para entera o casi entera.' },
+      { id: 'b', text: 'Funciona, pero se acumulan decisiones que nadie más puede tomar.' },
+      { id: 'c', text: 'Funciona, pero hay tareas que solo yo sé hacer y se atrasan.' },
+      { id: 'd', text: 'Funciona razonablemente bien sin mí.' }
+    ]
+  },
+  {
+    id: 'q2', type: 'single',
+    text: 'Las cosas que hacés cada día, ¿cuán fácilmente podrías traspasárselas a otra persona?',
+    options: [
+      { id: 'a', text: 'La mayoría son simples y cualquiera con buena voluntad podría hacerlas.' },
+      { id: 'b', text: 'Algunas son simples, pero las importantes requieren criterio que cuesta transmitir.' },
+      { id: 'c', text: 'La mayoría requiere conocimiento del contexto que no se enseña fácil.' },
+      { id: 'd', text: 'Casi nada es transmisible: hace falta haber estado años acá para entenderlas.' }
+    ]
+  },
+  {
+    id: 'q3', type: 'single',
+    text: 'En las últimas dos semanas, ¿cuánto de tu día a día fue hacer lo que tenía que pasar, y cuánto fue resolver cosas que se salieron de cauce?',
+    options: [
+      { id: 'a', text: 'Casi todo el tiempo estuve resolviendo cosas que se salieron de cauce.' },
+      { id: 'b', text: 'Más resolver imprevistos que avanzar con lo que tenía planeado.' },
+      { id: 'c', text: 'Mitad y mitad.' },
+      { id: 'd', text: 'La mayoría del tiempo avancé con lo previsto.' }
+    ]
+  },
+  {
+    id: 'q4', type: 'single',
+    text: '¿Cuántos de los pagos que hace tu empresa pasan por vos para autorizarse o ejecutarse?',
+    options: [
+      { id: 'a', text: 'Todos.' },
+      { id: 'b', text: 'Todos los que superan cierto monto.' },
+      { id: 'c', text: 'Solo los grandes o estratégicos.' },
+      { id: 'd', text: 'Casi ninguno, alguien más se ocupa.' }
+    ]
+  },
+  {
+    id: 'q5', type: 'scale-multi',
+    text: 'Pensá en delegar el manejo de pagos en alguien de tu equipo o un externo de confianza. ¿Cuánto te identificás con cada frase?',
+    items: [
+      { id: 'a', text: '"Si yo no veo cada pago, pierdo el pulso del negocio."' },
+      { id: 'b', text: '"No tengo a nadie en quien confíe lo suficiente para esto."' },
+      { id: 'c', text: '"No tengo armado un sistema que me deje delegar esto sin perder control."' }
+    ]
+  },
+  {
+    id: 'q6', type: 'single',
+    text: 'Cuando intentás delegar una tarea importante, ¿cuál suele ser el principal obstáculo?',
+    options: [
+      { id: 'a', text: 'No encuentro a alguien con la capacidad para hacerla.' },
+      { id: 'b', text: 'La hicieron mal antes y prefiero no volver a pasar por eso.' },
+      { id: 'c', text: 'Me cuesta soltar, aunque sé que la persona podría hacerla.' },
+      { id: 'd', text: 'No tengo el tiempo de explicarla en detalle, termino haciéndola yo.' }
+    ]
+  },
+  {
+    id: 'q7', type: 'scale',
+    text: 'Cuando alguien de tu equipo hace una tarea, ¿con qué frecuencia pensás "lo hubiera hecho mejor yo"?',
+    leftLabel: 'Casi nunca', rightLabel: 'Casi siempre'
+  },
+  {
+    id: 'q8', type: 'single',
+    text: '¿Cómo te sentís hoy con tu negocio?',
+    options: [
+      { id: 'a', text: 'Con energía, lo disfruto.' },
+      { id: 'b', text: 'Cumplo, pero me agota.' },
+      { id: 'c', text: 'Cansado, ya no me motiva como antes.' },
+      { id: 'd', text: 'Quiero salir, pero no encuentro cómo.' }
+    ]
+  },
+  {
+    id: 'q9', type: 'single',
+    text: '¿Dónde vive hoy el conocimiento operativo de tu empresa — los criterios, las excepciones, las formas de hacer las cosas?',
+    options: [
+      { id: 'a', text: 'Casi todo está en mi cabeza.' },
+      { id: 'b', text: 'Una parte está en mi cabeza, otra parte la saben algunos del equipo, pero no está escrita.' },
+      { id: 'c', text: 'Está distribuido en el equipo, cada uno sabe lo suyo, pero no está documentado.' },
+      { id: 'd', text: 'Está documentado en procesos, manuales o sistemas que cualquiera puede consultar.' }
+    ]
+  },
+  {
+    id: 'q10', type: 'single',
+    text: 'Si pudieras vender tu negocio mañana a un precio razonable, ¿lo harías?',
+    options: [
+      { id: 'a', text: 'Ni en pedo, lo quiero hacer crecer.' },
+      { id: 'b', text: 'Tal vez, dependería del precio.' },
+      { id: 'c', text: 'Probablemente sí.' },
+      { id: 'd', text: 'Sí, sin dudarlo.' }
+    ]
+  }
+];
+
+const scoringMap = {
+  q1: { a: { Bombero: 3, Memoria: 1 }, b: { Firmante: 2 }, c: { Memoria: 2 }, d: {} },
+  q2: { a: {}, b: { Memoria: 1, Firmante: 1 }, c: { Memoria: 2 }, d: { Memoria: 3 } },
+  q3: { a: { Bombero: 3 }, b: { Bombero: 2 }, c: { Bombero: 1 }, d: {} },
+  q4: { a: { Firmante: 3 }, b: { Firmante: 2 }, c: { Firmante: 1 }, d: {} },
+  q6: { a: { Desconfiado: 1 }, b: { Desconfiado: 3 }, c: { Desconfiado: 2 }, d: { Memoria: 1 } },
+  q8: { a: {}, b: { Cansado: 1 }, c: { Cansado: 2 }, d: { Cansado: 3 } },
+  q9: { a: { Memoria: 3 }, b: { Memoria: 2 }, c: {}, d: {} },
+  q10: { a: {}, b: {}, c: { Cansado: 2 }, d: { Cansado: 3 } }
+};
+
+const maxScores = { Bombero: 6, Memoria: 9, Firmante: 9, Desconfiado: 9, Cansado: 6 };
+
+const archetypes = {
+  Bombero: {
+    name: 'Bombero', article: 'un', fullName: 'El Bombero',
+    tagline: 'Vivís resolviendo lo que se rompe.',
+    description: 'La urgencia es tu modo por defecto, y cuando no hay urgencia sentís que algo se está pasando. Te convenciste de que en tu rubro no se puede planificar — pero la verdad es que nunca paraste lo suficiente para intentarlo. Tu agotamiento no es de trabajar mucho. Es de no poder soltar el modo emergencia.'
+  },
+  Memoria: {
+    name: 'Memoria', article: 'un', fullName: 'El Memoria',
+    tagline: 'Tu empresa funciona porque vos te acordás.',
+    description: 'Los precios, los criterios, las excepciones, las formas de hacer las cosas — todo vive en tu cabeza. Cuando alguien pregunta "¿cómo se hace?", terminás explicando vos. La paradoja: cada vez que respondés esa pregunta, reforzás el sistema que te tiene atrapado.'
+  },
+  Firmante: {
+    name: 'Firmante', article: 'un', fullName: 'El Firmante',
+    tagline: 'Delegaste casi todo, menos la plata.',
+    description: 'Cada pago pasa por vos porque sentís que ahí está el control real. En parte tenés razón — pero el costo es que estás encadenado al circuito financiero diario de tu empresa. No podés irte una semana porque alguien tiene que firmar. La pregunta no es si confiás en el otro: es qué sistema te falta para poder soltar.'
+  },
+  Desconfiado: {
+    name: 'Desconfiado', article: 'un', fullName: 'El Desconfiado',
+    tagline: 'Probaste delegar y sacaste tu conclusión: nadie lo hace como vos.',
+    description: 'Probablemente sea cierto en el corto plazo. Pero esa lógica te llevó a un lugar donde sos vos contra el resto, y cada nuevo empleado entra con sospecha. La frustración no es del equipo: es de que nunca dedicaste el tiempo a hacer enseñable lo que vos hacés bien.'
+  },
+  Cansado: {
+    name: 'Cansado', article: 'un', fullName: 'El Cansado',
+    tagline: 'Hace tiempo que no disfrutás esto.',
+    description: 'Cumplís, sostenés, aguantás — pero el motor que te traía hasta acá ya se apagó. Tal vez todavía no podés irte porque no encontraste cómo, o porque la empresa te necesita demasiado. Lo que está claro: el negocio no se sostiene si vos te apagás del todo, y vos no podés encenderte sin antes salir.'
+  }
+};
+
+let currentIdx = 0;
+let answers = {};
+
+function startTest() {
+  document.getElementById('welcome').classList.add('hidden');
+  document.getElementById('questionScreen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIdx];
+  const screen = document.getElementById('questionScreen');
+  const total = questions.length;
+  const num = currentIdx + 1;
+  const pct = ((num - 1) / total) * 100;
+
+  let html = `
+    <div class="progress-bar">
+      <span class="progress-num">${String(num).padStart(2,'0')} / ${String(total).padStart(2,'0')}</span>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${pct}%"></div>
+      </div>
+    </div>
+    <h2 class="question-text">${q.text}</h2>
+  `;
+
+  if (q.type === 'single') {
+    html += '<div class="options">';
+    q.options.forEach((opt, i) => {
+      const sel = answers[q.id] === opt.id ? 'selected' : '';
+      const letter = String.fromCharCode(65 + i);
+      html += `
+        <button class="option ${sel}" onclick="selectOption('${q.id}','${opt.id}')">
+          <span class="marker">${letter}</span><span>${opt.text}</span>
+        </button>`;
+    });
+    html += '</div>';
+  } else if (q.type === 'scale') {
+    const val = answers[q.id];
+    html += `
+      <div class="scale-labels">
+        <span>${q.leftLabel}</span>
+        <span>${q.rightLabel}</span>
+      </div>
+      <div class="scale">
+    `;
+    for (let i = 1; i <= 5; i++) {
+      const sel = val === i ? 'selected' : '';
+      html += `<button class="scale-btn ${sel}" onclick="selectScale('${q.id}',${i})">${i}</button>`;
+    }
+    html += '</div>';
+  } else if (q.type === 'scale-multi') {
+    if (!answers[q.id]) answers[q.id] = {};
+    q.items.forEach(item => {
+      const val = answers[q.id][item.id];
+      html += `
+        <div class="scale-question">
+          <p class="scale-statement">${item.text}</p>
+          <div class="scale-labels">
+            <span>Nada</span>
+            <span>Totalmente</span>
+          </div>
+          <div class="scale">
+      `;
+      for (let i = 1; i <= 5; i++) {
+        const sel = val === i ? 'selected' : '';
+        html += `<button class="scale-btn ${sel}" onclick="selectScaleMulti('${q.id}','${item.id}',${i})">${i}</button>`;
+      }
+      html += '</div></div>';
+    });
+  }
+
+  const isAnswered = checkAnswered(q);
+  const isLast = currentIdx === total - 1;
+  html += `
+    <div class="nav-row">
+      ${currentIdx > 0
+        ? '<button class="btn-secondary" onclick="prevQuestion()"><span style="font-size:18px;line-height:1;">←</span> Atrás</button>'
+        : '<div></div>'}
+      <button class="btn-primary" onclick="nextQuestion()" ${isAnswered ? '' : 'disabled'}>
+        ${isLast ? 'Ver resultado' : 'Siguiente'} <span class="arrow">→</span>
+      </button>
+    </div>
+  `;
+
+  screen.innerHTML = html;
+  screen.style.animation = 'none';
+  screen.offsetHeight;
+  screen.style.animation = 'fadeUp 0.4s ease-out';
+}
+
+function checkAnswered(q) {
+  if (q.type === 'single') return !!answers[q.id];
+  if (q.type === 'scale') return !!answers[q.id];
+  if (q.type === 'scale-multi') {
+    if (!answers[q.id]) return false;
+    return q.items.every(item => !!answers[q.id][item.id]);
+  }
+  return false;
+}
+
+function selectOption(qid, optId) { answers[qid] = optId; renderQuestion(); }
+function selectScale(qid, val) { answers[qid] = val; renderQuestion(); }
+function selectScaleMulti(qid, itemId, val) {
+  if (!answers[qid]) answers[qid] = {};
+  answers[qid][itemId] = val;
+  renderQuestion();
+}
+
+function nextQuestion() {
+  if (currentIdx < questions.length - 1) {
+    currentIdx++;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function prevQuestion() {
+  if (currentIdx > 0) {
+    currentIdx--;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    renderQuestion();
+  }
+}
+
+function computeScores() {
+  const scores = { Bombero: 0, Memoria: 0, Firmante: 0, Desconfiado: 0, Cansado: 0 };
+  ['q1','q2','q3','q4','q6','q8','q9','q10'].forEach(qid => {
+    const ans = answers[qid];
+    if (ans && scoringMap[qid] && scoringMap[qid][ans]) {
+      const map = scoringMap[qid][ans];
+      Object.keys(map).forEach(arch => {
+        if (scores[arch] !== undefined) scores[arch] += map[arch];
+      });
+    }
+  });
+  if (answers.q5) {
+    scores.Firmante += Math.max(0, (answers.q5.a || 0) - 2);
+    scores.Desconfiado += Math.max(0, (answers.q5.b || 0) - 2);
+  }
+  if (answers.q7) {
+    scores.Desconfiado += Math.max(0, answers.q7 - 2);
+  }
+  const pctScores = {};
+  Object.keys(scores).forEach(arch => {
+    pctScores[arch] = Math.round((scores[arch] / maxScores[arch]) * 100);
+  });
+  return { raw: scores, pct: pctScores };
+}
+
+function showResult() {
+  document.getElementById('questionScreen').classList.add('hidden');
+  const result = document.getElementById('resultScreen');
+  result.classList.remove('hidden');
+
+  const { pct } = computeScores();
+  const ranked = Object.keys(pct).sort((a,b) => pct[b] - pct[a]);
+  const dominant = ranked[0];
+  const secondary = ranked[1];
+  const dominantPct = pct[dominant];
+  const secondaryPct = pct[secondary];
+  const isHealthy = dominantPct < 30;
+
+  let html = '';
+
+  if (isHealthy) {
+    html = `
+      <div class="result-header">
+        <div class="kicker">Tu perfil</div>
+        <h2>No te estás trabando <em>demasiado.</em></h2>
+        <p>Por lo que respondiste, tu operación no depende excesivamente de vos. Sos minoría: la mayoría de los dueños de Pyme están atrapados en alguno de los cinco arquetipos del modelo. Si igual querés conversar sobre algún punto específico, escribime.</p>
+      </div>
+      <div class="archetype-card">
+        <div class="archetype-rank">Tendencia más marcada</div>
+        <h3 class="archetype-name">${archetypes[dominant].fullName}</h3>
+        <p class="archetype-meta">${archetypes[dominant].tagline}</p>
+        <p class="archetype-desc">${archetypes[dominant].description}</p>
+        <div class="bar-track"><div class="bar-fill" style="width:0%" data-target="${dominantPct}"></div></div>
+        <div class="bar-label"><span>Intensidad</span><span>${dominantPct}%</span></div>
+      </div>
+    `;
+  } else {
+    html = `
+      <div class="result-header">
+        <div class="kicker">Tu perfil</div>
+        <h2>Sos, sobre todo, ${archetypes[dominant].article} <em>${archetypes[dominant].name}</em>.</h2>
+        <p>Con un componente fuerte de ${archetypes[secondary].name}. Te lo explico abajo. No es una etiqueta: es un mapa de cómo te estás trabando hoy, y por dónde es probable que se salga.</p>
+      </div>
+
+      <div class="archetype-card dominant">
+        <div class="archetype-rank">Arquetipo dominante</div>
+        <h3 class="archetype-name">${archetypes[dominant].fullName}</h3>
+        <p class="archetype-meta">${archetypes[dominant].tagline}</p>
+        <p class="archetype-desc">${archetypes[dominant].description}</p>
+        <div class="bar-track"><div class="bar-fill" style="width:0%" data-target="${dominantPct}"></div></div>
+        <div class="bar-label"><span>Intensidad</span><span>${dominantPct}%</span></div>
+      </div>
+
+      <div class="archetype-card">
+        <div class="archetype-rank">Arquetipo secundario</div>
+        <h3 class="archetype-name">${archetypes[secondary].fullName}</h3>
+        <p class="archetype-meta">${archetypes[secondary].tagline}</p>
+        <p class="archetype-desc">${archetypes[secondary].description}</p>
+        <div class="bar-track"><div class="bar-fill" style="width:0%" data-target="${secondaryPct}"></div></div>
+        <div class="bar-label"><span>Intensidad</span><span>${secondaryPct}%</span></div>
+      </div>
+
+      <div class="insight-box">
+        <div class="insight-kicker">Lo que esto significa</div>
+        <p>${getInsight(dominant, secondary)}</p>
+      </div>
+    `;
+  }
+
+  html += `
+    <div class="mail-section" id="mailSection">
+      <h3>¿Querés tu informe ampliado?</h3>
+      <p>Te mando por mail el perfil completo (los 5 arquetipos y dónde caés en cada uno) más una mini-guía de los próximos 3 movimientos según tu arquetipo dominante. Sin obligación de nada.</p>
+      <div class="mail-form">
+        <input type="email" class="mail-input" id="emailInput" placeholder="tu@email.com">
+        <button class="btn-primary" onclick="submitEmail()">
+          Enviar <span class="arrow">→</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Si querés conversar sobre tu caso puntualmente, <a href="mailto:daniel@gocorp.com.ar">escribime</a>.
+      <br>Diagnóstico GoCorp · Daniel Gómez
+    </div>
+  `;
+
+  result.innerHTML = html;
+  setTimeout(() => {
+    document.querySelectorAll('.bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.target + '%';
+    });
+  }, 300);
+}
+
+function getInsight(dom, sec) {
+  const combos = {
+    Bombero_Memoria: 'Estás en el cruce más común y más doloroso: vivís apagando incendios <em>y</em> sos la única persona que sabe cómo apagarlos. Hasta que el conocimiento no salga de tu cabeza, los incendios van a seguir necesitándote.',
+    Bombero_Firmante: 'Resolvés todo el día <em>y</em> autorizás cada peso que se mueve. Es el cocktail perfecto para no poder tomarte ni un fin de semana sin sobresaltos.',
+    Bombero_Desconfiado: 'Reaccionás todo el día porque no confiás en que el equipo prevenga lo que se viene. Pero la prevención solo aparece cuando soltás el control de la reacción.',
+    Bombero_Cansado: 'Estás agotado de un modo específico: el cansancio del que apaga incendios sin parar. No es un problema de horas — es un problema de modo.',
+    Memoria_Firmante: 'Sos la base de datos <em>y</em> el firmante. La empresa no te necesita por uno solo de los dos motivos: te necesita por los dos a la vez. Ese es el nudo a desatar.',
+    Memoria_Desconfiado: 'Nunca documentaste lo que sabés, y eso te confirma todos los días que nadie lo hace como vos. Es una profecía autocumplida — y la salida es siempre la misma: poner por escrito lo que vive en tu cabeza.',
+    Memoria_Cansado: 'Cargás con todo el conocimiento del negocio <em>y</em> ya no querés cargarlo. Esa combinación es insostenible: o lo descargás, o terminás de quemarte.',
+    Firmante_Desconfiado: 'No delegás la plata porque no confiás. Pero el problema no es la confianza: es que nunca armaste el sistema que te permitiría confiar sin perder control.',
+    Firmante_Cansado: 'Estás atado al circuito de pagos <em>y</em> ya no querés estar acá. Mientras no resuelvas la atadura, la salida no existe.',
+    Desconfiado_Cansado: 'Probaste delegar, salió mal, te quemaste. Y ahora cargás todo otra vez con menos energía que antes. Esa es la espiral — y se rompe por la pieza más pequeña, no por intentar de nuevo lo mismo.',
+    Memoria_Bombero: 'Sos la única persona que sabe cómo apagar los incendios <em>y</em> los incendios pasan todo el día. Hasta que el conocimiento no salga de tu cabeza, los incendios van a seguir necesitándote.',
+    Firmante_Bombero: 'Autorizás cada peso <em>y</em> reaccionás todo el día. No podés tomarte ni un fin de semana sin sobresaltos.',
+    Desconfiado_Bombero: 'No confiás en que el equipo prevenga, así que reaccionás vos todo el día. La prevención solo aparece cuando soltás el control de la reacción.',
+    Cansado_Bombero: 'Cansancio del que apaga incendios sin parar. No es un problema de horas — es un problema de modo.',
+    Firmante_Memoria: 'Sos la base de datos <em>y</em> el firmante. La empresa te necesita por los dos motivos a la vez. Ese es el nudo a desatar.',
+    Desconfiado_Memoria: 'Nunca documentaste lo que sabés, y eso te confirma todos los días que nadie lo hace como vos. La salida es poner por escrito lo que vive en tu cabeza.',
+    Cansado_Memoria: 'Cargás con todo el conocimiento del negocio <em>y</em> ya no querés cargarlo. O lo descargás, o terminás de quemarte.',
+    Desconfiado_Firmante: 'No delegás la plata porque no confiás. El problema no es la confianza: es que nunca armaste el sistema que te permitiría confiar sin perder control.',
+    Cansado_Firmante: 'Atado al circuito de pagos <em>y</em> ya no querés estar acá. Mientras no resuelvas la atadura, la salida no existe.',
+    Cansado_Desconfiado: 'Probaste delegar, salió mal, te quemaste. Cargás todo otra vez con menos energía. Esa espiral se rompe por la pieza más pequeña, no por intentar de nuevo lo mismo.'
+  };
+  return combos[`${dom}_${sec}`] || `Tu combinación principal es <em>${dom} + ${sec}</em>. Es un nudo específico que se desata por una pieza concreta — pero requiere mirarlo con detalle.`;
+}
+
+function submitEmail() {
+  const input = document.getElementById('emailInput');
+  const email = input.value.trim();
+  if (!email || !email.includes('@')) {
+    input.style.borderColor = '#E8A317';
+    input.focus();
+    return;
+  }
+  const section = document.getElementById('mailSection');
+  section.innerHTML = `
+    <div class="mail-confirm">
+      <div class="check">✓</div>
+      <h3>Listo</h3>
+      <p>Te llega el informe en los próximos minutos a <strong>${email}</strong>.<br>Si no aparece, revisá spam.</p>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>
