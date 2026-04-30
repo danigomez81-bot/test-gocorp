@@ -547,6 +547,15 @@
     flex-wrap: wrap;
   }
 
+  .mail-form .mail-input {
+    flex: 1 1 140px;
+    min-width: 140px;
+  }
+
+  .mail-form .btn-primary {
+    flex: 0 0 auto;
+  }
+
   .mail-input {
     flex: 1;
     min-width: 200px;
@@ -1044,6 +1053,7 @@ function showResult() {
       <h3>¿Querés tu informe ampliado?</h3>
       <p>Te mando por mail el perfil completo (los 5 arquetipos y dónde caés en cada uno) más una mini-guía de los próximos 3 movimientos según tu arquetipo dominante. Sin obligación de nada.</p>
       <div class="mail-form">
+        <input type="text" class="mail-input" id="nameInput" placeholder="Tu nombre">
         <input type="email" class="mail-input" id="emailInput" placeholder="tu@email.com">
         <button class="btn-primary" onclick="submitEmail()">
           Enviar <span class="arrow">→</span>
@@ -1092,19 +1102,51 @@ function getInsight(dom, sec) {
 }
 
 function submitEmail() {
+  const nameInput = document.getElementById('nameInput');
   const input = document.getElementById('emailInput');
+  const name = nameInput.value.trim();
   const email = input.value.trim();
-  if (!email || !email.includes('@')) {
+
+  // Validate name
+  if (!name || name.length < 2) {
+    nameInput.style.borderColor = '#E8A317';
+    nameInput.focus();
+    return;
+  }
+  // Validate email
+  if (!email || !email.includes('@') || !email.includes('.')) {
     input.style.borderColor = '#E8A317';
     input.focus();
     return;
   }
 
-  // Recompute scores at submit time (cheap, ensures freshness)
+  // Recompute scores at submit time
   const { pct } = computeScores();
   const ranked = Object.keys(pct).sort((a, b) => pct[b] - pct[a]);
   const dominant = ranked[0];
   const secondary = ranked[1];
+
+  // Build human-readable answer log
+  const answersReadable = {};
+  questions.forEach(q => {
+    const ans = answers[q.id];
+    if (ans === undefined || ans === null) {
+      answersReadable[q.id] = '(sin respuesta)';
+      return;
+    }
+    if (q.type === 'single') {
+      const opt = q.options.find(o => o.id === ans);
+      answersReadable[q.id] = `[${ans.toUpperCase()}] ${opt ? opt.text : ans}`;
+    } else if (q.type === 'scale') {
+      answersReadable[q.id] = `${ans} (${q.leftLabel} 1 ↔ 5 ${q.rightLabel})`;
+    } else if (q.type === 'scale-multi') {
+      const parts = q.items.map(item => {
+        const v = (ans && ans[item.id]) ? ans[item.id] : '?';
+        return `${item.id.toUpperCase()}: ${v}/5 — ${item.text}`;
+      });
+      answersReadable[q.id] = parts.join(' || ');
+    }
+  });
 
   // Lock UI
   const section = document.getElementById('mailSection');
@@ -1112,10 +1154,12 @@ function submitEmail() {
   const originalBtnHtml = submitBtn.innerHTML;
   submitBtn.disabled = true;
   submitBtn.innerHTML = 'Enviando...';
+  nameInput.disabled = true;
   input.disabled = true;
 
   // Payload to Formspree
   const payload = {
+    nombre: name,
     email: email,
     arquetipo_dominante: dominant,
     arquetipo_secundario: secondary,
@@ -1124,7 +1168,17 @@ function submitEmail() {
     pct_firmante: pct.Firmante,
     pct_desconfiado: pct.Desconfiado,
     pct_cansado: pct.Cansado,
-    _subject: `Nuevo lead Test Dueño Saturado — ${dominant} / ${secondary}`
+    q1_dias_sin_avisar: answersReadable.q1,
+    q2_traspaso_tareas: answersReadable.q2,
+    q3_dia_a_dia: answersReadable.q3,
+    q4_pagos_pasan_por_vos: answersReadable.q4,
+    q5_delegar_pagos: answersReadable.q5,
+    q6_obstaculo_delegar: answersReadable.q6,
+    q7_lo_hubiera_hecho_yo: answersReadable.q7,
+    q8_como_te_sentis: answersReadable.q8,
+    q9_donde_vive_el_conocimiento: answersReadable.q9,
+    q10_venderias_negocio: answersReadable.q10,
+    _subject: `Nuevo lead — ${name} — ${dominant} / ${secondary}`
   };
 
   fetch('https://formspree.io/f/mnjwaodv', {
@@ -1140,7 +1194,7 @@ function submitEmail() {
       section.innerHTML = `
         <div class="mail-confirm">
           <div class="check">✓</div>
-          <h3>Listo</h3>
+          <h3>Listo, ${name}</h3>
           <p>Recibí tu mail. Te mando el informe en las próximas horas a <strong>${email}</strong>.<br>Si no lo ves en el inbox, revisá spam o promociones.</p>
         </div>
       `;
@@ -1151,6 +1205,7 @@ function submitEmail() {
   .catch(error => {
     submitBtn.disabled = false;
     submitBtn.innerHTML = originalBtnHtml;
+    nameInput.disabled = false;
     input.disabled = false;
     section.querySelector('p').innerHTML = '<strong style="color:#A6661F;">No pude enviar tu mail.</strong> Probá de nuevo en unos segundos, o escribime directo a daniel.gomez@gocorp.com.ar.';
   });
