@@ -1099,14 +1099,61 @@ function submitEmail() {
     input.focus();
     return;
   }
+
+  // Recompute scores at submit time (cheap, ensures freshness)
+  const { pct } = computeScores();
+  const ranked = Object.keys(pct).sort((a, b) => pct[b] - pct[a]);
+  const dominant = ranked[0];
+  const secondary = ranked[1];
+
+  // Lock UI
   const section = document.getElementById('mailSection');
-  section.innerHTML = `
-    <div class="mail-confirm">
-      <div class="check">✓</div>
-      <h3>Listo</h3>
-      <p>Te llega el informe en los próximos minutos a <strong>${email}</strong>.<br>Si no aparece, revisá spam.</p>
-    </div>
-  `;
+  const submitBtn = section.querySelector('.btn-primary');
+  const originalBtnHtml = submitBtn.innerHTML;
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = 'Enviando...';
+  input.disabled = true;
+
+  // Payload to Formspree
+  const payload = {
+    email: email,
+    arquetipo_dominante: dominant,
+    arquetipo_secundario: secondary,
+    pct_bombero: pct.Bombero,
+    pct_memoria: pct.Memoria,
+    pct_firmante: pct.Firmante,
+    pct_desconfiado: pct.Desconfiado,
+    pct_cansado: pct.Cansado,
+    _subject: `Nuevo lead Test Dueño Saturado — ${dominant} / ${secondary}`
+  };
+
+  fetch('https://formspree.io/f/mnjwaodv', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(response => {
+    if (response.ok) {
+      section.innerHTML = `
+        <div class="mail-confirm">
+          <div class="check">✓</div>
+          <h3>Listo</h3>
+          <p>Recibí tu mail. Te mando el informe en las próximas horas a <strong>${email}</strong>.<br>Si no lo ves en el inbox, revisá spam o promociones.</p>
+        </div>
+      `;
+    } else {
+      throw new Error('Formspree response not ok');
+    }
+  })
+  .catch(error => {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = originalBtnHtml;
+    input.disabled = false;
+    section.querySelector('p').innerHTML = '<strong style="color:#A6661F;">No pude enviar tu mail.</strong> Probá de nuevo en unos segundos, o escribime directo a daniel.gomez@gocorp.com.ar.';
+  });
 }
 </script>
 
