@@ -9,24 +9,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #E8EEF4;
-    --surface: #FFFFFF;
-    --surface-warm: #FFF5E6;
-    --ink: #2D4059;
-    --ink-soft: #5A6878;
-    --ink-faint: #8A95A3;
-    --accent: #5A9BC4;
-    --accent-deep: #3F7FA8;
-    --warm: #E8A317;
-    --rule: #C8D3DE;
-    --rule-soft: #DDE5EE;
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --surface-warm: #f7f6f3;
+    --hero: #181816;
+    --ink: #1a1a18;
+    --ink-soft: #666666;
+    --ink-faint: #999990;
+    --ink-on-dark: #f0ede6;
+    --ink-soft-on-dark: #8c897f;
+    --accent: #B8913A;
+    --accent-deep: #9a7830;
+    --rule: #e8e5df;
+    --rule-soft: #eeeeee;
     --display: 'Fraunces', Georgia, serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body {
-    background: transparent;
+    background: var(--bg);
     color: var(--ink);
     font-family: Arial, Helvetica, sans-serif;
     font-size: 16px;
@@ -55,7 +57,9 @@
   .welcome {
     display: flex;
     flex-direction: column;
-    padding: 16px 0;
+    background: var(--hero);
+    margin: -24px -28px 40px;
+    padding: 56px 28px 56px;
     animation: fadeUp 0.7s ease-out;
   }
 
@@ -75,7 +79,7 @@
     line-height: 1.05;
     letter-spacing: -0.02em;
     margin-bottom: 32px;
-    color: var(--ink);
+    color: var(--ink-on-dark);
     font-variation-settings: "opsz" 144;
   }
 
@@ -87,20 +91,20 @@
 
   .welcome .lede {
     font-size: 17px;
-    color: var(--ink-soft);
+    color: var(--ink-soft-on-dark);
     line-height: 1.6;
     max-width: 540px;
     margin-bottom: 16px;
   }
 
   .welcome .lede strong {
-    color: var(--ink);
+    color: var(--ink-on-dark);
     font-weight: 700;
   }
 
   .welcome .meta {
     font-size: 13px;
-    color: var(--ink-faint);
+    color: var(--ink-soft-on-dark);
     margin: 32px 0 36px;
     display: flex;
     gap: 18px;
@@ -115,12 +119,13 @@
     content: "";
     flex: 1;
     height: 1px;
-    background: var(--rule);
+    background: rgba(255,255,255,0.15);
     max-width: 80px;
   }
 
   /* ============ Question screen ============ */
   .question-screen {
+    padding-top: 8px;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -216,7 +221,7 @@
   }
 
   .option.selected .marker {
-    color: var(--warm);
+    color: var(--accent);
   }
 
   /* ============ Scale (1-5) ============ */
@@ -322,7 +327,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: transparent;
+    background: var(--bg);
     color: var(--ink-soft);
     border: 1.5px solid var(--rule);
     padding: 14px 22px;
@@ -394,22 +399,22 @@
   }
 
   .archetype-card.dominant {
-    background: var(--ink);
-    border-color: var(--ink);
-    color: var(--surface);
+    background: var(--hero);
+    border-color: var(--hero);
+    color: var(--ink-on-dark);
   }
 
   .archetype-card.dominant .archetype-name,
   .archetype-card.dominant .archetype-meta {
-    color: var(--surface);
+    color: var(--ink-on-dark);
   }
 
   .archetype-card.dominant .archetype-rank {
-    color: var(--warm);
+    color: var(--accent);
   }
 
   .archetype-card.dominant .archetype-desc {
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--ink-soft-on-dark);
   }
 
   .archetype-card.dominant .bar-track {
@@ -417,11 +422,11 @@
   }
 
   .archetype-card.dominant .bar-fill {
-    background: var(--warm);
+    background: var(--accent);
   }
 
   .archetype-card.dominant .bar-label {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--ink-soft-on-dark);
   }
 
   .archetype-rank {
@@ -489,7 +494,7 @@
     margin-top: 36px;
     padding: 28px 26px;
     background: var(--surface-warm);
-    border-left: 3px solid var(--warm);
+    border-left: 3px solid var(--accent);
     border-radius: 0 4px 4px 0;
   }
 
@@ -497,7 +502,7 @@
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    color: var(--warm);
+    color: var(--accent);
     font-weight: 700;
     margin-bottom: 14px;
   }
@@ -627,6 +632,7 @@
   /* ============ Mobile ============ */
   @media (max-width: 480px) {
     .stage { padding: 20px 20px 50px; }
+    .welcome { margin: -20px -20px 32px; padding: 44px 20px 44px; }
     .welcome h1 { font-size: 1.9rem; }
     .question-text { font-size: 1.25rem; }
     .archetype-name { font-size: 24px; }
@@ -1109,13 +1115,13 @@ function submitEmail() {
 
   // Validate name
   if (!name || name.length < 2) {
-    nameInput.style.borderColor = '#E8A317';
+    nameInput.style.borderColor = '#B8913A';
     nameInput.focus();
     return;
   }
   // Validate email
   if (!email || !email.includes('@') || !email.includes('.')) {
-    input.style.borderColor = '#E8A317';
+    input.style.borderColor = '#B8913A';
     input.focus();
     return;
   }
@@ -1207,7 +1213,7 @@ function submitEmail() {
     submitBtn.innerHTML = originalBtnHtml;
     nameInput.disabled = false;
     input.disabled = false;
-    section.querySelector('p').innerHTML = '<strong style="color:#A6661F;">No pude enviar tu mail.</strong> Probá de nuevo en unos segundos, o escribime directo a daniel.gomez@gocorp.com.ar.';
+    section.querySelector('p').innerHTML = '<strong style="color:var(--accent);">No pude enviar tu mail.</strong> Probá de nuevo en unos segundos, o escribime directo a daniel.gomez@gocorp.com.ar.';
   });
 }
 </script>
